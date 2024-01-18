@@ -47,27 +47,31 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     function makePredictionAndReset() {
-        // Convert the 2D array (100, 3) to a 3D tensor (1, 100, 3)
-        const inputTensor = tf.tensor3d([accelerometerData]);
+        try {
+            // Convert the 2D array (100, 3) to a 3D tensor (1, 100, 3)
+            const inputTensor = tf.tensor3d([accelerometerData]);
 
-        // Normalize the input data using Min-Max scaling
-        const min = tf.min(inputTensor, (axis = 1), (keepDims = true));
-        const max = tf.max(inputTensor, (axis = 1), (keepDims = true));
+            // Normalize the input data using Min-Max scaling
+            const min = tf.min(inputTensor, (axis = 1), (keepDims = true));
+            const max = tf.max(inputTensor, (axis = 1), (keepDims = true));
 
-        const normalizedInput = tf.div(
-            tf.sub(inputTensor, min),
-            tf.sub(max, min)
-        );
+            const normalizedInput = tf.div(
+                tf.sub(inputTensor, min),
+                tf.sub(max, min)
+            );
 
-        // Make predictions
-        const predictions = model.predict(normalizedInput);
+            // Make predictions
+            const predictions = model.predict(normalizedInput);
 
-        // Display predictions
-        alert("HI");
-        predictions.print();
-        document.body.innerHTML = `<h1>${predictions}</h1>`;
+            // Display predictions
+            alert(predictions);
+            predictions.print();
+            document.body.innerHTML = `<h1>${predictions}</h1>`;
 
-        // Reset the accelerometer data array
-        accelerometerData = [];
+            // Reset the accelerometer data array
+            accelerometerData = [];
+        } catch (e) {
+            alert(e);
+        }
     }
 });
