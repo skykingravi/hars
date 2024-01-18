@@ -3,7 +3,15 @@ import * as tf from "@tensorflow/tfjs";
 
 const LABELS = ["Downstairs", "Jogging", "Sitting", "Upstairs", "Walking"];
 const argmax = (array) => {
-    return array.indexOf(Math.max(...array));
+    let maxi = -Infinity,
+        indx;
+    for (let i = 0; i < array.length; i++) {
+        if (maxi < array[i]) {
+            maxi = array[i];
+            indx = i;
+        }
+    }
+    return indx;
 };
 
 document.addEventListener("DOMContentLoaded", async function () {
