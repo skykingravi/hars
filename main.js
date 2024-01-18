@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             // Reset the accelerometer data array
             accelerometerData = [];
         } catch (e) {
-            console.error(e);
+            alert(e);
         }
     }
 });
