@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
     // Load the TensorFlow.js model
-    const model = await tf.loadLayersModel("./assets/model.json");
+    const model = await tf.loadLayersModel("./model.json");
 
     // Array to store accelerometer data
     let accelerometerData = [];
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 makePredictionAndReset();
             }
         } else {
-            document.body = "<h1>Not Supported</h1>";
+            document.body.innerHTML = "<h1>Not Supported</h1>";
         }
     }
 
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         // Display predictions
         predictions.print();
-        document.body = `<h1>${predictions}</h1>`;
+        document.body.innerHTML = `<h1>${predictions}</h1>`;
 
         // Reset the accelerometer data array
         accelerometerData = [];
