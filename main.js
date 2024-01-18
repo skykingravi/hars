@@ -48,7 +48,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     function makePredictionAndReset() {
-        alert("HI");
         // Convert the 2D array (100, 3) to a 3D tensor (1, 100, 3)
         const inputTensor = tf.tensor3d([accelerometerData]);
 
@@ -65,6 +64,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const predictions = model.predict(normalizedInput);
 
         // Display predictions
+        alert(predictions);
         predictions.print();
         document.body.innerHTML = `<h1>${predictions}</h1>`;
 
