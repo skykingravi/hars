@@ -31,10 +31,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         const acceleration =
             event.accelerationIncludingGravity || event.acceleration;
 
-        document.body.innerHTML = `<h1>${acceleration}</h1>`;
-
         // Check if the acceleration data is available
         if (acceleration) {
+            document.body.innerHTML = `<p>${acceleration.x}-${acceleration.y}-${acceleration.z}</p>`;
             const dataPoint = [acceleration.x, acceleration.y, acceleration.z];
             accelerometerData.push(dataPoint);
 
@@ -64,7 +63,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const predictions = model.predict(normalizedInput);
 
         // Display predictions
-        alert(predictions);
+        // alert(predictions);
         predictions.print();
         document.body.innerHTML = `<h1>${predictions}</h1>`;
 
