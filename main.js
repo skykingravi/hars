@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
     // Load the TensorFlow.js model
     const model = await tf.loadLayersModel("./model.json");
+    model.summary();
 
     // Array to store accelerometer data
     let accelerometerData = [];
