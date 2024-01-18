@@ -52,8 +52,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             const inputTensor = tf.tensor3d([accelerometerData]);
 
             // Normalize the input data using Min-Max scaling
-            const min = tf.min(inputTensor, (axis = 1), (keepDims = true));
-            const max = tf.max(inputTensor, (axis = 1), (keepDims = true));
+            const min = tf.min(inputTensor, [1], true);
+            const max = tf.max(inputTensor, [1], true);
 
             const normalizedInput = tf.div(
                 tf.sub(inputTensor, min),
