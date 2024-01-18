@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             // Display predictions
             predictions.print();
-            document.body.innerHTML = `<h1>${
+            document.body.innerHTML += `<h1>${
                 LABELS[argmax(predictions.arraySync()[0])]
             }</h1>`;
 
