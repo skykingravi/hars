@@ -4,7 +4,7 @@ import * as tf from "@tensorflow/tfjs";
 const LABELS = ["Downstairs", "Jogging", "Sitting", "Upstairs", "Walking"];
 const argmax = (array) => {
     let maxi = -Infinity,
-        indx;
+        indx = 0;
     for (let i = 0; i < array.length; i++) {
         if (maxi < array[i]) {
             maxi = array[i];
@@ -77,6 +77,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             // Display predictions
             predictions.print();
+            let indx = argmax(predictions);
+            alert(indx);
             document.body.innerHTML = `<h1>${LABELS[argmax(predictions)]}</h1>`;
 
             // Reset the accelerometer data array
