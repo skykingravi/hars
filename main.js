@@ -1,6 +1,11 @@
 // Import TensorFlow.js
 import * as tf from "@tensorflow/tfjs";
 
+LABELS = ["Downstairs", "Jogging", "Sitting", "Upstairs", "Walking"];
+const argmax = (array) => {
+    return array.indexOf(Math.max(...array));
+};
+
 document.addEventListener("DOMContentLoaded", async function () {
     // Request accelerometer permission
     if (
@@ -33,7 +38,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         // Check if the acceleration data is available
         if (acceleration) {
-            document.body.innerHTML = `<p>${acceleration.x}-${acceleration.y}-${acceleration.z}</p>`;
             const dataPoint = [acceleration.x, acceleration.y, acceleration.z];
             accelerometerData.push(dataPoint);
 
@@ -64,14 +68,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             const predictions = model.predict(normalizedInput);
 
             // Display predictions
-            alert(predictions);
             predictions.print();
-            document.body.innerHTML = `<h1>${predictions}</h1>`;
+            document.body.innerHTML = `<h1>${LABELS[argmax(predictions)]}</h1>`;
 
             // Reset the accelerometer data array
             accelerometerData = [];
         } catch (e) {
-            alert(e);
+            console.error(e);
         }
     }
 });
