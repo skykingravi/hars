@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const predictions = model.predict(normalizedInput);
 
         // Display predictions
-        alert(predictions);
+        alert("HI");
         predictions.print();
         document.body.innerHTML = `<h1>${predictions}</h1>`;
 
