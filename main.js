@@ -1,7 +1,7 @@
 // Import TensorFlow.js
 import * as tf from "@tensorflow/tfjs";
 
-LABELS = ["Downstairs", "Jogging", "Sitting", "Upstairs", "Walking"];
+const LABELS = ["Downstairs", "Jogging", "Sitting", "Upstairs", "Walking"];
 const argmax = (array) => {
     return array.indexOf(Math.max(...array));
 };
