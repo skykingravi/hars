@@ -68,8 +68,11 @@ document.addEventListener("DOMContentLoaded", async function () {
                 1
             );
 
+            // Reshape the input tensor to (1, 100, 9)
+            const reshapedInputTensor = inputTensor.reshape([1, 100, 9]);
+
             // Make predictions
-            const predictions = model.predict(inputTensor);
+            const predictions = model.predict(reshapedInputTensor);
 
             // Convert predictions tensor to JavaScript array
             const predictionsArray = predictions.arraySync();
