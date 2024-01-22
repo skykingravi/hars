@@ -1,7 +1,15 @@
 // Import TensorFlow.js
 import * as tf from "@tensorflow/tfjs";
 
-const LABELS = ["Downstairs", "Jogging", "Sitting", "Upstairs", "Walking"];
+const LABELS = [
+    "biking",
+    "downstairs",
+    "jogging",
+    "sitting",
+    "standing",
+    "upstairs",
+    "walking",
+];
 const argmax = (array) => {
     return array.indexOf(Math.max(...array));
 };
@@ -24,59 +32,100 @@ document.addEventListener("DOMContentLoaded", async function () {
     const model = await tf.loadLayersModel("./model.json");
     model.summary();
 
-    // Array to store accelerometer data
-    let accelerometerData = [];
+    // Initialize arrays to store sensor data
+    let linearAccelerationData = [];
+    let gravityData = [];
+    let rotationRateData = [];
 
-    window.addEventListener("devicemotion", handleDeviceMotion, {
-        frequency: 50,
-    });
+    // Function to add sensor data
+    function addSensorData(linearAcc, gravity, rotationRate) {
+        // Push data to the respective arrays
+        linearAccelerationData.push(linearAcc);
+        gravityData.push(gravity);
+        rotationRateData.push(rotationRate);
 
-    function handleDeviceMotion(event) {
-        // Extract acceleration data from the event
-        const acceleration =
-            event.accelerationIncludingGravity || event.acceleration;
-
-        // Check if the acceleration data is available
-        if (acceleration) {
-            const dataPoint = [acceleration.x, acceleration.y, acceleration.z];
-            accelerometerData.push(dataPoint);
-
-            // When we have 100 data points, make a prediction and reset the array
-            if (accelerometerData.length === 100) {
-                makePredictionAndReset();
-            }
-        } else {
-            document.body.innerHTML = "<h1>Not Supported</h1>";
+        // If we have 100 records, make predictions and reset the arrays
+        if (
+            linearAccelerationData.length === 100 &&
+            gravityData.length === 100 &&
+            rotationRateData.length === 100
+        ) {
+            makePredictionsAndReset();
         }
     }
 
-    function makePredictionAndReset() {
+    // Function to make predictions and reset the arrays
+    function makePredictionsAndReset() {
         try {
-            // Convert the 2D array (100, 3) to a 3D tensor (1, 100, 3)
-            const inputTensor = tf.tensor3d([accelerometerData]);
+            // Convert sensor data arrays to 3D tensors
+            const linearAccTensor = tf.tensor2d(linearAccelerationData);
+            const gravityTensor = tf.tensor2d(gravityData);
+            const rotationRateTensor = tf.tensor2d(rotationRateData);
 
-            // Normalize the input data using Min-Max scaling
-            const min = tf.min(inputTensor, [1], true);
-            const max = tf.max(inputTensor, [1], true);
-
-            const normalizedInput = tf.div(
-                tf.sub(inputTensor, min),
-                tf.sub(max, min)
+            // Concatenate the tensors along the last axis (axis=1) to get a single input tensor
+            const inputTensor = tf.concat(
+                [gravityTensor, linearAccTensor, rotationRateTensor],
+                1
             );
 
             // Make predictions
-            const predictions = model.predict(normalizedInput);
+            const predictions = model.predict(inputTensor);
 
-            // Display predictions
-            predictions.print();
+            // Convert predictions tensor to JavaScript array
+            const predictionsArray = predictions.arraySync();
+
             document.body.innerHTML += `<h1>${
-                LABELS[argmax(predictions.arraySync()[0])]
+                LABELS[argmax(predictionsArray[0])]
             }</h1>`;
 
-            // Reset the accelerometer data array
-            accelerometerData = [];
+            // Find the index of the predicted activity
+            const maxIndex = predictionsArray[0].indexOf(
+                Math.max(...predictionsArray[0])
+            );
+
+            // Log the predicted activity index (adjust based on your activity classes)
+            console.log("Predicted Activity Index:", maxIndex);
+
+            // Reset the sensor data arrays
+            linearAccelerationData = [];
+            gravityData = [];
+            rotationRateData = [];
         } catch (e) {
             alert(e);
+        }
+    }
+
+    // Add event listeners for sensor data
+    window.addEventListener("devicemotion", handleDeviceMotion, {
+        frequency: 12,
+    });
+
+    function handleDeviceMotion(event) {
+        // Extract relevant sensor data from the event
+        const linearAcceleration = event.acceleration;
+        const gravity = event.accelerationIncludingGravity;
+        const rotationRate = event.rotationRate;
+
+        // Check if the sensor data is available
+        if (linearAcceleration && gravity && rotationRate) {
+            const linearAccDataPoint = [
+                linearAcceleration.x,
+                linearAcceleration.y,
+                linearAcceleration.z,
+            ];
+            const gravityDataPoint = [gravity.x, gravity.y, gravity.z];
+            const rotationRateDataPoint = [
+                rotationRate.alpha,
+                rotationRate.beta,
+                rotationRate.gamma,
+            ];
+
+            // Add sensor data to the arrays
+            addSensorData(
+                linearAccDataPoint,
+                gravityDataPoint,
+                rotationRateDataPoint
+            );
         }
     }
 });
